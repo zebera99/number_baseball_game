@@ -1,52 +1,62 @@
+import random as rand
+
+
+def generate_numbers():
+    numbers = []
+
+    while len(numbers) < 3:
+        random_numbers = rand.randint(1, 9)
+
+        if random_numbers not in numbers:
+            numbers.append(random_numbers)
+
+    return numbers
+
+
 def take_guess():
     print("숫자 3개를 하나씩 차례대로 입력하세요.")
 
     new_guess = []
+    while len(new_guess) < 3:
+        new_num = int(input(f'{len(new_guess) + 1}번째 숫자를 입력하세요: '))
 
-    S = 0
-    B = 0
-    num1 = int(new_guess[0])
-    num2 = int(new_guess[1])
-    num3 = int(new_guess[2])
-
-    while True:
-        guess1 = int(input('1번째 숫자를 입력하세요: '))
-        if guess1 == num1:
-            S += 1
-        elif guess1 == num2 or guess1 == num3:
-            B += 1
-        elif guess1 < 1 or guess1 > 9:
+        if new_num < 0 or new_num > 9:
             print('범위를 벗어나는 숫자입니다. 다시 입력하세요.')
-            guess1 = int(input('1번째 숫자를 입력하세요: '))
-        new_guess.append(guess1)
-
-        guess2 = int(input('2번째 숫자를 입력하세요: '))
-        if guess2 == num2:
-            S += 1
-        elif guess2 == num1 or guess2 == num3:
-            B += 1
-        elif guess2 < 1 or guess2 > 9:
-            print('범위를 벗어나는 숫자입니다. 다시 입력하세요.')
-            guess2 = int(input('2번째 숫자를 입력하세요: '))
-        elif guess2 == int(guess1):
+        elif new_num in new_guess:
             print('중복되는 숫자입니다. 다시 입력하세요.')
-            guess2 = int(input('2번째 숫자를 입력하세요: '))
-        new_guess.append(guess2)
+        else:
+            new_guess.append(new_num)
 
-        guess3 = int(input('3번째 숫자를 입력하세요: '))
-        if guess3 == num3:
-            S += 1
-        elif guess3 == num2 or guess3 == num1:
-            B += 1
-        elif guess3 < 1 or guess3 > 9:
-            print('범위를 벗어나는 숫자입니다. 다시 입력하세요.')
-            guess3 = int(input('3번째 숫자를 입력하세요: '))
-        elif guess3 == int(guess1) or guess3 == int(guess2):
-            print('중복되는 숫자입니다. 다시 입력하세요.')
-            guess3 = int(input('3번째 숫자를 입력하세요: '))
-        new_guess.append(guess3)
-        break
-        
     return new_guess
 
-print(take_guess())
+
+def get_score(guess, solution):
+    strike_count = 0
+    ball_count = 0
+
+    for i in range(3):
+        if guess[i] == solution[i]:
+            strike_count += 1
+        elif guess[i] in solution:
+            ball_count += 1
+
+    return strike_count, ball_count
+
+
+ANSWER = generate_numbers()
+tries = 0
+
+
+while True:
+    user_guess = take_guess()
+    s, b = get_score(user_guess, ANSWER)
+
+    print("{}S {}B\n".format(s, b))
+    tries += 1
+
+    if s == 3:
+        break
+
+print(f'축하합니다. {tries}번 만에 세 숫자의 값과 위치를 모두 맞추셨습니다.')
+
+
